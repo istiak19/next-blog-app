@@ -2,7 +2,7 @@ import { Prisma, User } from "@prisma/client";
 import { prisma } from "../../config/db";
 
 const getAllUser = async () => {
-    const createdUser = await prisma.user.findMany({
+    const getUser = await prisma.user.findMany({
         select: {
             id: true,
             name: true,
@@ -12,7 +12,32 @@ const getAllUser = async () => {
             Picture: true,
             isVerified: true,
             createdAt: true,
-            updatedAt: true
+            updatedAt: true,
+            Post: true
+        },
+        orderBy: {
+            createdAt: "desc"
+        }
+    });
+    return getUser;
+};
+
+const getByUser = async (id: number) => {
+    const createdUser = await prisma.user.findUnique({
+        where: {
+            id
+        },
+        select: {
+            id: true,
+            name: true,
+            phone: true,
+            role: true,
+            status: true,
+            Picture: true,
+            isVerified: true,
+            createdAt: true,
+            updatedAt: true,
+            Post: true
         }
     });
     return createdUser;
@@ -28,5 +53,6 @@ const createUser = async (payload: Prisma.UserCreateInput): Promise<User> => {
 
 export const userService = {
     getAllUser,
+    getByUser,
     createUser
 };
