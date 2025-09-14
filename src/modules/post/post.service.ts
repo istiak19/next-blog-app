@@ -47,8 +47,35 @@ const createPost = async (payload: Prisma.PostCreateInput): Promise<Post> => {
     return post;
 };
 
+const updatePost = async (payload: Prisma.PostCreateInput, id: number,): Promise<Post> => {
+    const post = await prisma.post.update({
+        where: {
+            id
+        },
+        data: payload,
+        include: {
+            author: {
+                select: {
+                    name: true,
+                    phone: true,
+                }
+            }
+        }
+    });
+    return post;
+};
+
+const deletePost = async (id: number) => {
+    const post = await prisma.post.delete({
+        where: { id }
+    });
+    return post;
+};
+
 export const postService = {
     getAllPost,
     getByPost,
-    createPost
+    createPost,
+    updatePost,
+    deletePost
 };

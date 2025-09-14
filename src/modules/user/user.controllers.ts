@@ -17,8 +17,22 @@ const createUser = async (req: Request, res: Response) => {
     res.status(201).json(result);
 };
 
+const updateUser = async (req: Request, res: Response) => {
+    const id = req.params.id;
+    const result = await userService.updateUser(req.body, Number(id));
+    res.status(201).json(result);
+};
+
+const deleteUser = async (req: Request, res: Response) => {
+    const id = req.params.id;
+    const result = await userService.deleteUser(Number(id));
+    res.status(201).json(result);
+};
+
 export const userController = {
     getAllUser,
     getByUser,
-    createUser
+    createUser,
+    updateUser,
+    deleteUser
 };
