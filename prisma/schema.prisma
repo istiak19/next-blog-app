@@ -14,5 +14,41 @@ datasource db {
 }
 
 model User {
-  id Int @id @default(autoincrement())
+  id         Int        @id @default(autoincrement())
+  name       String
+  password   String?
+  role       Role       @default(User)
+  phone      String
+  Picture    String?
+  status     UserStatus @default(Active)
+  isVerified Boolean    @default(false)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  Post       Post[]
+}
+
+model Post {
+  id         Int      @id @default(autoincrement())
+  title      String
+  content    String
+  thumbnail  String?
+  isFeatured Boolean  @default(false)
+  tags       String[]
+  views      Int      @default(0)
+  authorId   Int
+  author     User     @relation(fields: [authorId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+enum Role {
+  Super_Admin
+  Admin
+  User
+}
+
+enum UserStatus {
+  Active
+  Inactive
+  Block
 }
