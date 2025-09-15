@@ -1,26 +1,33 @@
 import { Post, Prisma } from "@prisma/client";
 import { prisma } from "../../config/db";
 
-const getAllPost = async (page: number, limit: number, search: string) => {
+const getAllPost = async (page: number, limit: number, search: string, isFeatured?: boolean, tags?: string[], sortBy: string = "createdAt",
+    sortOrder: "asc" | "desc" = "desc") => {
     const skip = (page - 1) * limit;
+    let where: any = {
+        ...(isFeatured !== undefined && { isFeatured }),
+        ...(tags && { tags: { hasSome: tags } }),
+        OR: [
+            {
+                title: {
+                    contains: search,
+                    mode: "insensitive"
+                }
+            },
+            {
+                content: {
+                    contains: search,
+                    mode: "insensitive"
+                }
+            }
+        ]
+    }
     const post = await prisma.post.findMany({
         skip,
         take: limit,
-        where: {
-            OR: [
-                {
-                    title: {
-                        contains: search,
-                        mode: "insensitive"
-                    }
-                },
-                {
-                    content: {
-                        contains: search,
-                        mode: "insensitive"
-                    }
-                }
-            ]
+        where,
+        orderBy: {
+            [sortBy]: sortOrder === "asc" ? "asc" : "desc"
         },
         include: {
             author: {
@@ -32,7 +39,17 @@ const getAllPost = async (page: number, limit: number, search: string) => {
         }
     });
 
-    return post;
+    const total = await prisma.post.count({ where });
+
+    return {
+        data: post,
+        pagination: {
+            skip,
+            limit,
+            totalPages: Math.ceil(total / limit)
+        },
+        total
+    };
 };
 
 const getByPost = async (id: number) => {
