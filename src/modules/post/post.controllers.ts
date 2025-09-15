@@ -9,7 +9,9 @@ const getAllPost = async (req: Request, res: Response) => {
     const tags = req.query.tags ? (req.query.tags as string).split(",") : undefined;
     const sortBy = (req.query.sortBy as string) || "createdAt";
     const sortOrder: "asc" | "desc" = req.query.sortOrder === "asc" ? "asc" : "desc";
+
     const result = await postService.getAllPost(page, limit, search, isFeatured, tags, sortBy, sortOrder);
+    
     res.status(200).json(result);
 };
 

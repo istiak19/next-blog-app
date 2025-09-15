@@ -53,20 +53,34 @@ const getAllPost = async (page: number, limit: number, search: string, isFeature
 };
 
 const getByPost = async (id: number) => {
-    const post = await prisma.post.findUnique({
-        where: {
-            id
-        },
-        include: {
-            author: {
-                select: {
-                    name: true,
-                    phone: true,
+    const result = await prisma.$transaction(async (tx) => {
+        await tx.post.update({
+            where: { id },
+            data: {
+                views: {
+                    increment: 1
                 }
             }
-        }
+        });
+
+        const post = await tx.post.findUnique({
+            where: {
+                id
+            },
+            include: {
+                author: {
+                    select: {
+                        name: true,
+                        phone: true,
+                    }
+                }
+            }
+        });
+
+        return post;
     });
-    return post;
+
+    return result;
 };
 
 const createPost = async (payload: Prisma.PostCreateInput): Promise<Post> => {
