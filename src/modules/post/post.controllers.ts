@@ -2,7 +2,9 @@ import { Request, Response } from "express";
 import { postService } from "./post.service";
 
 const getAllPost = async (req: Request, res: Response) => {
-    const result = await postService.getAllPost();
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
+    const result = await postService.getAllPost(page, limit);
     res.status(200).json(result);
 };
 

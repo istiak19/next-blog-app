@@ -1,8 +1,11 @@
 import { Post, Prisma } from "@prisma/client";
 import { prisma } from "../../config/db";
 
-const getAllPost = async () => {
+const getAllPost = async (page: number, limit: number) => {
+    const skip = (page - 1) * limit;
     const post = await prisma.post.findMany({
+        skip,
+        take: limit,
         include: {
             author: {
                 select: {
@@ -12,6 +15,7 @@ const getAllPost = async () => {
             }
         }
     });
+    
     return post;
 };
 
