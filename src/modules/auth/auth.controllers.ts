@@ -7,6 +7,13 @@ const login = async (req: Request, res: Response) => {
     res.status(200).json(result);
 };
 
+const authWithGoogle = async (req: Request, res: Response) => {
+    const payload = req.body;
+    const result = await authService.authWithGoogle(payload);
+    res.status(200).json(result);
+};
+
 export const authController = {
-    login
+    login,
+    authWithGoogle
 };

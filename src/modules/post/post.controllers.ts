@@ -38,10 +38,16 @@ const deletePost = async (req: Request, res: Response) => {
     res.status(200).json(result);
 };
 
+const getPostStar = async (req: Request, res: Response) => {
+    const result = await postService.getPostStar();
+    res.status(200).json(result);
+};
+
 export const postController = {
     getAllPost,
     getByPost,
     createPost,
     updatePost,
-    deletePost
+    deletePost,
+    getPostStar
 };

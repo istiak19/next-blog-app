@@ -4,6 +4,7 @@ import { postController } from "./post.controllers";
 const router = Router();
 
 router.get("/", postController.getAllPost);
+router.get("/stars", postController.getPostStar);
 router.post("/", postController.createPost);
 router.patch("/:id", postController.updatePost);
 router.get("/:id", postController.getByPost);
